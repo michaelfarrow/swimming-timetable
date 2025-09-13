@@ -9,6 +9,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.13.7"
+    "astro": "^5.13.7",
+    "lodash": "^4.17.21",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/lodash": "^4.17.20",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "type-fest": "^5.0.0"
   }
 }
