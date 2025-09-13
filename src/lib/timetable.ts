@@ -124,6 +124,8 @@ export async function timetable() {
 
   console.log("here");
 
+  console.log(await res.text());
+
   const data = Data.parse(await res.json());
 
   console.log("here 2");
