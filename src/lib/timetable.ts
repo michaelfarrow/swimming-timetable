@@ -122,7 +122,11 @@ export async function timetable() {
     `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
   );
 
+  console.log("here");
+
   const data = Data.parse(await res.json());
+
+  console.log("here 2");
 
   return data.items
     .filter((item) => {
