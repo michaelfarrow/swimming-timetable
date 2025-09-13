@@ -120,15 +120,16 @@ function mapItem(item: Item) {
 export async function timetable() {
   const res = await fetch(
     `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
+    {
+      method: "GET",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
+      },
+    },
   );
 
-  console.log("here");
-
-  console.log(await res.text());
-
   const data = Data.parse(await res.json());
-
-  console.log("here 2");
 
   return data.items
     .filter((item) => {
