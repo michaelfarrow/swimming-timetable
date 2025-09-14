@@ -3,6 +3,6 @@ import vercel from "@astrojs/vercel";
 
 export default defineConfig({
   output: "server",
-  output: "hybrid",
+  output: "static",
   adapter: vercel(),
 });
