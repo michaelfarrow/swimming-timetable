@@ -24,7 +24,7 @@ export class PatchedHttpsProxyAgent<
 }
 
 const httpsAgent = new PatchedHttpsProxyAgent(
-  `https://${import.meta.env.PROXY_USER}:${import.meta.env.PROXY_PASSWORD}@81.131.168.184:10080`,
+  `https://${import.meta.env.PROXY_USER}:${import.meta.env.PROXY_PASSWORD}@proxy.home.farrow.io:10080`,
   {
     rejectUnauthorized: false,
     timeout: 20000,
