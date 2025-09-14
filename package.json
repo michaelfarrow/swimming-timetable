@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "astro": "^5.13.7",
+    "axios": "^1.12.1",
+    "dotenv": "^17.2.2",
+    "hpagent": "^1.2.0",
     "lodash": "^4.17.21",
     "zod": "^4.1.8"
   },

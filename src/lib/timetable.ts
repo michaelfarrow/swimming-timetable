@@ -1,48 +1,56 @@
 import * as z from "zod";
 import lodash from "lodash";
 import type { SetNonNullableDeep } from "type-fest";
+import { client } from "@/lib/axios";
 
 const { chain } = lodash;
 
-const Data = z.object({
-  items: z.array(
-    z.object({
-      short_description: z.string(),
-      full_description: z.string(),
-      description: z.string(),
-      booking_url: z.url(),
-      spaces: z.object({
-        capacity: z.coerce.number(),
-        available: z.coerce.number(),
-        waiting: z.coerce.number(),
-      }),
-      times: z.record(
-        z.union([
-          z.literal("Monday"),
-          z.literal("Tuesday"),
-          z.literal("Wednesday"),
-          z.literal("Thursday"),
-          z.literal("Friday"),
-          z.literal("Saturday"),
-          z.literal("Sunday"),
-        ]),
-        z.array(
-          z.object({
-            description: z.string(),
-            start: z.iso.time(),
-            end: z.iso.time(),
-          }),
+const Data = z.union([
+  z.object({
+    items: z.array(
+      z.object({
+        short_description: z.string(),
+        full_description: z.string(),
+        description: z.string(),
+        booking_url: z.url(),
+        spaces: z.object({
+          capacity: z.coerce.number(),
+          available: z.coerce.number(),
+          waiting: z.coerce.number(),
+        }),
+        times: z.record(
+          z.union([
+            z.literal("Monday"),
+            z.literal("Tuesday"),
+            z.literal("Wednesday"),
+            z.literal("Thursday"),
+            z.literal("Friday"),
+            z.literal("Saturday"),
+            z.literal("Sunday"),
+          ]),
+          z.array(
+            z.object({
+              description: z.string(),
+              start: z.iso.time(),
+              end: z.iso.time(),
+            }),
+          ),
         ),
-      ),
-    }),
-  ),
-});
+      }),
+    ),
+  }),
+  z.object({
+    error: z.string(),
+  }),
+]);
 
-type Data = z.infer<typeof Data>;
+type Data = Extract<z.infer<typeof Data>, { items: any }>;
 type Item = Data["items"][number];
 type Times = Data["items"][number]["times"];
 type Day = keyof Times;
 type Time = Times[Day][number];
+
+let cached: Data | null = null;
 
 const CENTER = "0169";
 const SEARCH = ["swimming", "fast"];
@@ -117,20 +125,7 @@ function mapItem(item: Item) {
   };
 }
 
-export async function timetable() {
-  const res = await fetch(
-    `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
-    {
-      method: "GET",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
-      },
-    },
-  );
-
-  const data = Data.parse(await res.json());
-
+function parseData(data: Data) {
   return data.items
     .filter((item) => {
       const haystack = item.short_description.toLowerCase();
@@ -140,4 +135,33 @@ export async function timetable() {
       return true;
     })
     .map(mapItem);
+}
+
+export async function timetable() {
+  try {
+    const res = await client.request({
+      url: `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
+      method: "GET",
+      responseType: "json",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
+      },
+      validateStatus: () => true,
+    });
+
+    const data = Data.parse(res.data);
+
+    if ("error" in data) return cached ? parseData(cached) : data;
+
+    cached = data;
+
+    return parseData(data);
+  } catch (e: any) {
+    console.log(e);
+    return {
+      error:
+        (e && e.statusMessage) || (e && e.message) || "Something went wrong",
+    };
+  }
 }

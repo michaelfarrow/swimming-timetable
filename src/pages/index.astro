@@ -15,23 +15,27 @@ const timetableData = await timetable();
   <body>
     <h1>Timetable</h1>
     {
-      timetableData.map((timetable) => (
-        <section>
-          <h2>{timetable.description}</h2>
-          {timetable.times.map(({ day, times }) => (
-            <div>
-              <h3>{day}</h3>
-              {(times.length &&
-                times.map((time) => (
-                  <li>
-                    {time.start} - {time.end}
-                  </li>
-                ))) ||
-                null}
-            </div>
-          ))}
-        </section>
-      ))
+      'error' in timetableData ? (
+        <div>{timetableData.error}</div>
+      ) : (
+        timetableData.map((timetable) => (
+          <section>
+            <h2>{timetable.description}</h2>
+            {timetable.times.map(({ day, times }) => (
+              <div>
+                <h3>{day}</h3>
+                {(times.length &&
+                  times.map((time) => (
+                    <li>
+                      {time.start} - {time.end}
+                    </li>
+                  ))) ||
+                  null}
+              </div>
+            ))}
+          </section>
+        ))
+      )
     }
   </body>
 </html>
