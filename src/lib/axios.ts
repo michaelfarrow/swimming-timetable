@@ -7,9 +7,9 @@ import {
 
 const extraOpts = Symbol("extra agent opts");
 
-export class PatchedHttpsProxyAgent<T> extends HttpsProxyAgent<T> {
-  private ca: any;
-
+export class PatchedHttpsProxyAgent<
+  T extends string,
+> extends HttpsProxyAgent<T> {
   constructor(url: URL, opts: HttpsProxyAgentOptions<T>) {
     super(url, opts);
     (this as any)[extraOpts] = opts;
