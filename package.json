@@ -14,7 +14,7 @@
     "astro": "^5.13.7",
     "axios": "^1.12.1",
     "dotenv": "^17.2.2",
-    "hpagent": "^1.2.0",
+    "https-proxy-agent": "^7.0.6",
     "lodash": "^4.17.21",
     "zod": "^4.1.8"
   },
