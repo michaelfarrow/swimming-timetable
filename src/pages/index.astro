@@ -3,7 +3,7 @@ import { timetable } from '@/lib/timetable';
 
 const timetableData = await timetable();
 
-Astro.response.headers.set('Cache-Control', 'no-cache');
+export const prerender = false;
 ---
 
 <html lang='en'>
