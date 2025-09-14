@@ -4,5 +4,7 @@ import vercel from "@astrojs/vercel";
 export default defineConfig({
   output: "server",
   output: "static",
-  adapter: vercel(),
+  adapter: vercel({
+    maxDuration: 20,
+  }),
 });
