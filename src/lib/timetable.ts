@@ -158,11 +158,10 @@ export async function timetable() {
 
     if ("error" in data) return cachedVal ? parseData(cachedVal) : data;
 
-    await cache.set(cacheKey, data);
+    await cache.set(cacheKey, data, { ttl: 3600 });
 
     return parseData(data);
   } catch (e: any) {
-    console.log(e);
     return {
       error:
         (e && e.statusMessage) || (e && e.message) || "Something went wrong",
