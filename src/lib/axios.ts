@@ -28,8 +28,6 @@ const httpsAgent = new PatchedHttpsProxyAgent(
   {
     rejectUnauthorized: false,
     timeout: 20000,
-    sessionTimeout: 20000,
-    keepAlive: true,
   },
 );
 
