@@ -2,7 +2,7 @@ import axios from "axios";
 import { HttpsProxyAgent } from "hpagent";
 
 const httpsAgent = new HttpsProxyAgent({
-  proxy: `https://${import.meta.env.PROXY_USER}:${import.meta.env.PROXY_PASSWORD}@proxy.home.farrow.io:8080`,
+  proxy: `http://${import.meta.env.PROXY_USER}:${import.meta.env.PROXY_PASSWORD}@proxy.home.farrow.io:10080`,
   rejectUnauthorized: false,
   proxyRequestOptions: {
     rejectUnauthorized: false,
