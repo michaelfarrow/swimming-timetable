@@ -2,6 +2,7 @@ import * as z from "zod";
 import lodash from "lodash";
 import type { SetNonNullableDeep } from "type-fest";
 import { client } from "@/lib/axios";
+import { getCache } from "@vercel/functions";
 
 const { chain } = lodash;
 
@@ -49,8 +50,6 @@ type Item = Data["items"][number];
 type Times = Data["items"][number]["times"];
 type Day = keyof Times;
 type Time = Times[Day][number];
-
-let cached: Data | null = null;
 
 const CENTER = "0169";
 const SEARCH = ["swimming", "fast"];
@@ -138,6 +137,11 @@ function parseData(data: Data) {
 }
 
 export async function timetable() {
+  const cache = getCache();
+  const cacheKey = `${CENTER}/timetable`;
+
+  const cachedVal: Data | null = (await cache.get(cacheKey)) as any;
+
   try {
     const res = await client.request({
       url: `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
@@ -152,9 +156,9 @@ export async function timetable() {
 
     const data = Data.parse(res.data);
 
-    if ("error" in data) return cached ? parseData(cached) : data;
+    if ("error" in data) return cachedVal ? parseData(cachedVal) : data;
 
-    cached = data;
+    await cache.set(cacheKey, data);
 
     return parseData(data);
   } catch (e: any) {
