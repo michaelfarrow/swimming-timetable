@@ -13,6 +13,6 @@ export function fetchWithProxy(
           "X-Proxy-Token": import.meta.env.PROXY_PASSWORD,
         },
       }),
-    { retries: 5 },
+    { retries: 20 },
   );
 }
