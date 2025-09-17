@@ -156,6 +156,9 @@ export async function timetable() {
 
     const res = await fetchWithProxy(
       `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
+      {
+        signal: AbortSignal.timeout(20 * 1000),
+      },
     );
 
     const data = Data.parse(await res.json());
