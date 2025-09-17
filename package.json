@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "build:astro": "astro build",
     "build": "docker build . -t weyforth/swimming-timetable",
     "push": "docker image push weyforth/swimming-timetable:latest"
   },

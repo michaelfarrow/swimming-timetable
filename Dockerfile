@@ -13,7 +13,7 @@ RUN npm install
 
 FROM build-deps AS build
 COPY . .
-RUN npm run build
+RUN npm run build:astro
 
 FROM node:22-slim AS runtime
 COPY --from=prod-deps /app/node_modules ./node_modules
