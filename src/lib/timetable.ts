@@ -1,8 +1,6 @@
 import * as z from "zod";
 import lodash from "lodash";
 import type { SetNonNullableDeep } from "type-fest";
-import { fetchWithProxy } from "@/lib/fetch";
-import { getCache } from "@vercel/functions";
 
 const { chain } = lodash;
 
@@ -137,41 +135,13 @@ function parseData(data: Data) {
 }
 
 export async function timetable() {
-  const cache = getCache();
-  const cacheKey = `${CENTER}/timetable`;
-
-  const cachedVal: Data | null = (await cache.get(cacheKey)) as any;
-
-  // try {
-  // const res = await client.request({
-  //   url: `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
-  //   method: "GET",
-  //   responseType: "json",
-  //   headers: {
-  //     "User-Agent":
-  //       "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
-  //   },
-  //   validateStatus: () => true,
-  // });
-
-  const res = await fetchWithProxy(
+  const res = await fetch(
     `https://api.everyoneactive.com/v1.0/centres/${CENTER}/timetable`,
-    {
-      signal: AbortSignal.timeout(2.5 * 1000),
-    },
   );
 
   const data = Data.parse(await res.json());
 
-  if ("error" in data) return cachedVal ? parseData(cachedVal) : data;
-
-  await cache.set(cacheKey, data, { ttl: 3600 });
+  if ("error" in data) return data;
 
   return parseData(data);
-  // } catch (e: any) {
-  //   return {
-  //     error:
-  //       (e && e.statusMessage) || (e && e.message) || "Something went wrong",
-  //   };
-  // }
 }
