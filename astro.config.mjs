@@ -5,6 +5,6 @@ export default defineConfig({
   output: "server",
   output: "static",
   adapter: vercel({
-    maxDuration: 20,
+    maxDuration: 60,
   }),
 });
